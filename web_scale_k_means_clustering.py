@@ -207,23 +207,22 @@ class Minibatchkmeans:
     
     def update_centroids(self, data,replacement=True):
       C = self.centroids.copy()
-      for i in range(self.max_iter):
-            if replacement:
-              data_batch = data[np.random.choice(data.shape[0], self.batchsize, replace=True)]
-            else:
-              data_batch = data[self.batchsize*i:self.batchsize*(i+1)]
+      if replacement:
+        data_batch = data[np.random.choice(data.shape[0], self.batchsize, replace=True)]
+      else:
+        data_batch = data[self.batchsize*i:self.batchsize*(i+1)]
 
-            V = np.zeros(C.shape[0])
-            idxs = np.empty(data_batch.shape[0], dtype=np.int)
+      V = np.zeros(C.shape[0])
+      idxs = np.empty(data_batch.shape[0], dtype=np.int)
         # Assign the closest centers without update for the whole batch:
-            for j, x in enumerate(data_batch):
-              idxs[j] = np.argmin(((C - x)**2).sum(1))
+      for j, x in enumerate(data_batch):
+        idxs[j] = np.argmin(((C - x)**2).sum(1))
 
         # Update centers:
-            for j, x in enumerate(data_batch):
-              V[idxs[j]] += 1
-              eta = 1.0 / V[idxs[j]]
-              C[idxs[j]] = (1.0 - eta) * C[idxs[j]] + eta * x
+      for j, x in enumerate(data_batch):
+        V[idxs[j]] += 1
+        eta = 1.0 / V[idxs[j]]
+        C[idxs[j]] = (1.0 - eta) * C[idxs[j]] + eta * x
         
       self.updatecentroids=C
 
